@@ -1,5 +1,3 @@
--- Active: 1733959918675@@127.0.0.1@5432@beta_fund
--- Drop existing tables
 DROP TABLE IF EXISTS LETTER CASCADE;
 DROP TABLE IF EXISTS DONOR CASCADE;
 DROP TABLE IF EXISTS DONOR_CIRCLE CASCADE;
@@ -11,14 +9,12 @@ DROP TABLE IF EXISTS DEFERREDPAYMENT;
 DROP TABLE IF EXISTS EVENTATTENDANCE;
 DROP TABLE IF EXISTS "event" CASCADE;
 
--- Create CLASSYEAR table
 CREATE TABLE CLASSYEAR (
     ClassID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
     ClassYear INTEGER, 
 	CONSTRAINT ClassPK PRIMARY KEY (ClassID)
 );
 
--- Create DONOR_CIRCLE table
 CREATE TABLE DONOR_CIRCLE (
     CircleID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
     CircleName TEXT,
@@ -27,13 +23,12 @@ CREATE TABLE DONOR_CIRCLE (
     CONSTRAINT CirclePK PRIMARY KEY (CircleID)
 );
 
--- Create DONOR table
 CREATE TABLE DONOR (
     DonorID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
     FirstName TEXT,
     LastName TEXT,
     Street TEXT,
-    City Text,
+    City TEXT,
     State_ TEXT CHECK (State_ IN
 			('AL', 'AK', 'AZ', 'AR', 'AS',
 			 'CA', 'CO', 'CT', 'DE', 'DC',
@@ -61,7 +56,6 @@ CREATE TABLE DONOR (
 	REFERENCES DONOR_CIRCLE (CircleID)
 );
 
--- Create LETTER table
 CREATE TABLE LETTER (
     LetterID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
     LetterType TEXT,
@@ -72,7 +66,6 @@ CREATE TABLE LETTER (
     REFERENCES DONOR(DonorID)
 );
 
--- Create "event" table
 CREATE TABLE "event" (
     EventID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
     EventName TEXT,
@@ -84,8 +77,6 @@ CREATE TABLE "event" (
     REFERENCES DONOR(DonorID)
 );
 
---Create EVENTATTENDANCE table
---Allows keeping history of which events a donor went to
 CREATE TABLE EVENTATTENDANCE (
     EventID INTEGER NOT NULL,
     DonorID INTEGER NOT NULL,
@@ -96,11 +87,10 @@ CREATE TABLE EVENTATTENDANCE (
     REFERENCES DONOR(DonorID)
 );
 
--- Create DONATION table
 CREATE TABLE DONATION (
     DonationID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
     Amount NUMERIC(10, 2),
-    "Date" DATE,  -- Date field changed to DATE type
+    "Date" DATE,
     MatchingGiftEligible BOOLEAN,
     DonorID INTEGER,
     CONSTRAINT DonationPK PRIMARY KEY (DonationID),
@@ -108,7 +98,6 @@ CREATE TABLE DONATION (
     REFERENCES DONOR(DonorID)
 );
 
--- Create EMPLOYER table
 CREATE TABLE EMPLOYER (
     EmployerID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
     EmployerName TEXT,
@@ -118,7 +107,6 @@ CREATE TABLE EMPLOYER (
     REFERENCES DONOR(DonorID)
 );
 
--- Create PAYMENT table
 CREATE TABLE PAYMENT (
     PaymentID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY,
     PaymentMethod TEXT CHECK (PaymentMethod IN ('Check', 'Credit Card', 'Deferred')),
@@ -141,7 +129,6 @@ CREATE TABLE DEFERREDPAYMENT
 	REFERENCES PAYMENT(PaymentID)
 );
 
--- Insert data into "class" table
 INSERT INTO CLASSYEAR (ClassYear)
 VALUES 
     (2024),
@@ -150,9 +137,8 @@ VALUES
     (2021),
     (2020);
 
--- Insert data into DONOR_CIRCLE table
 INSERT INTO DONOR_CIRCLE (CircleName, MinAmount, MaxAmount)
-VALUES --'E' indicates that the backslash escape sequence is used
+VALUES
     (E'Friend\'s Circle', 100.00, 249.99),
     ('Bronze Circle', 250.00, 499.99),
     ('Silver Circle', 500.00, 999.99),
@@ -164,7 +150,6 @@ VALUES --'E' indicates that the backslash escape sequence is used
     ('Platinum Circle', 25000.00, 49999.99),
     (E'President\' Circle', 50000.00, 99999999.99);
 
--- Insert data into DONOR table
 INSERT INTO DONOR (FirstName, LastName, Street, City, State_, Zip, PhoneNumber, Email, Category, ClassID, CircleID) 
 VALUES 
     ('John', 'Doe', 'Long Lane', 'Small Town', 'OK', '55599', '555-1234', 'john.doe@example.com', 'Alumni', 1, 1),
@@ -174,7 +159,6 @@ VALUES
     ('Charlie', 'Brown', 'Short Street', 'Brickville', 'OH', '22211', '555-6789', 'charlie.brown@example.com', 'Alumni', 5, 5),
     ('Diana', 'Clark', 'Cherry Street', 'Sakura', 'CA', '13955', '555-9876', 'diana.clark@example.com', 'Other', 1, 6);
 
--- Insert data into LETTER table
 INSERT INTO LETTER (LetterType, LetterDate, DonorID)
 VALUES 
     ('Thank You', '2024-01-15', 1),
@@ -184,7 +168,6 @@ VALUES
     ('Thank You', '2024-01-19', 5),
     ('Appeal', '2024-01-20', 6);
 
--- Insert data into "event" table
 INSERT INTO "event" (EventName, EventDate, EventLocation, DonorID)
 VALUES 
     ('Annual Gala', '2024-05-10', 'Grand Ballroom', 1),
@@ -194,7 +177,6 @@ VALUES
     ('Fundraising Banquet', '2024-10-30', 'Hilton Hotel', 5),
     ('Alumni Meet & Greet', '2024-06-15', 'Alumni Hall', 6);
 
---Insert data into EVENTATTENDANCE table
 INSERT INTO EVENTATTENDANCE (EventID, DonorID)
 VALUES
     (1, 2),
@@ -210,7 +192,6 @@ VALUES
     (3, 1),
     (5, 5);
 
--- Insert data into DONATION table
 INSERT INTO DONATION (Amount, "Date", MatchingGiftEligible, DonorID)
 VALUES 
     (750.00, '2024-12-12', TRUE, 3),
@@ -224,7 +205,6 @@ VALUES
     (5000.00, '2024-05-01', TRUE, 5),
     (25000.00, '2024-06-10', TRUE, 6);
 
--- Insert data into EMPLOYER table
 INSERT INTO EMPLOYER (EmployerName, DonorID)
 VALUES 
     ('TechCorp', 1),
@@ -234,7 +214,6 @@ VALUES
     ('GlobalTech', 5),
     ('BigBusiness', 6);
 
--- Insert data into PAYMENT table
 INSERT INTO PAYMENT (PaymentMethod, DonationID)
 VALUES 
     ('Credit Card', 1),
@@ -250,7 +229,6 @@ VALUES
     ('Deferred', 2),
     ('Deferred', 3);
 
---Insert data into DEFERREDPAYMENT table
 INSERT INTO DEFERREDPAYMENT (DueDate, AmountDue, IsSubmitted, SubmittedDate, PaymentID)
 VALUES 
     ('2024-12-01', 50.00, TRUE, '2024-11-29', 4),

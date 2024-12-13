@@ -8,10 +8,14 @@ export async function POST(req) {
 
 	try {
 		const client = await pool.connect();
+		console.log("L;kjaks;dfkl;asdjf;askjfd");
+
 		const result = await client.query(
 			`INSERT INTO DONOR (FirstName, LastName, PhoneNumber, Email, Category) VALUES ($1, $2, $3, $4, $5) RETURNING DonorID;`,
 			[firstName, lastName, phoneNumber, email, category]
 		);
+
+		console.log(";lkasdf;klasdkl;fas;lkjdfa;lsdf");
 
 		const donorId = result.rows[0].donorid;
 

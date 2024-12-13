@@ -4,7 +4,6 @@ import { RaisedPerClassYear } from '../components/RaisedPerClass';
 import { DonorByCategory } from '../components/DonorPerCategory';
 import { DonationPerCircle } from '../components/DonationPerCircle';
 import { PaymentsDue } from '../components/PaymentsDue';
-import { DonationPerEvent } from '../components/DonationPerEvent';
 
 export default async function Page() {
 	const data = await totalRaised();
@@ -43,7 +42,6 @@ export default async function Page() {
 				<DonorByCategory />
 				<DonationPerCircle />
 				<PaymentsDue />
-				<DonationPerEvent />
 			</div>
 		</div>
 	);

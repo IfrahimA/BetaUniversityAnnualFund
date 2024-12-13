@@ -1,27 +1,38 @@
 import pool from '@/app/utils/postgres';
 
 export async function POST(req) {
-	const { paymentMethod, donationID } = await req.json();
+	const client = await pool.connect();
 
 	try {
-		const client = await pool.connect();
+		const { paymentMethod, donationID } = await req.json();
+
+		await client.query('BEGIN');
+
 		const result = await client.query(
-			`INSERT INTO PAYMENT (PaymentMethod, DonationID) 
-            VALUES ($1, $2)`,
+			`INSERT INTO PAYMENT (PaymentMethod, DonationID) VALUES ($1, $2)`,
 			[paymentMethod, donationID]
 		);
 
-		client.release();
+		await client.query('COMMIT');
+
+		return new Response(JSON.stringify({ message: 'Success' }), {
+			status: 200,
+			headers: { 'Content-Type': 'application/json' },
+		});
+	} catch (error) {
+		await client.query('ROLLBACK');
+		console.error('Payment insertion error:', error);
 		return new Response(
-			JSON.stringify({ message: 'Success' }),
+			JSON.stringify({
+				error: 'Failed to create payment entry',
+				details: error instanceof Error ? error.message : 'Unknown error',
+			}),
 			{
-				status: 200,
+				status: 500,
 				headers: { 'Content-Type': 'application/json' },
 			}
 		);
-	} catch (error) {
-		return new Response(JSON.stringify({ error: 'Failed to create donor' }), {
-			status: 500,
-		});
+	} finally {
+		client.release();
 	}
 }

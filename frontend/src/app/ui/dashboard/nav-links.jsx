@@ -11,7 +11,6 @@ const links = [
 		href: '/dashboard/donations',
 	},
 	{ name: 'Members', href: '/dashboard/members' },
-	{ name: 'Contact', href: '/dashboard/contacts' },
 ];
 
 export default function NavLinks() {

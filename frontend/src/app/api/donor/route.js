@@ -1,14 +1,13 @@
+'use server';
+
 import pool from '@/app/utils/postgres';
 
 export async function POST(req) {
-	const client = await pool.connect();
+	const { firstName, lastName, phoneNumber, email, category } =
+		await req.json();
 
 	try {
-		const { firstName, lastName, phoneNumber, email, category } =
-			await req.json();
-
-		await client.query('BEGIN');
-
+		const client = await pool.connect();
 		const result = await client.query(
 			`INSERT INTO DONOR (FirstName, LastName, PhoneNumber, Email, Category) 
             VALUES ($1, $2, $3, $4, $5) RETURNING donorid`,
@@ -17,8 +16,7 @@ export async function POST(req) {
 
 		const donorId = result.rows[0].donorid;
 
-		await client.query('COMMIT');
-
+		client.release();
 		return new Response(
 			JSON.stringify({ message: 'Success', donorId: donorId }),
 			{
@@ -27,19 +25,8 @@ export async function POST(req) {
 			}
 		);
 	} catch (error) {
-		await client.query('ROLLBACK');
-		console.error('Donor creation error:', error);
-		return new Response(
-			JSON.stringify({
-				error: 'Failed to create donor',
-				details: error instanceof Error ? error.message : 'Unknown error',
-			}),
-			{
-				status: 500,
-				headers: { 'Content-Type': 'application/json' },
-			}
-		);
-	} finally {
-		client.release();
+		return new Response(JSON.stringify({ error: 'Failed to create donor' }), {
+			status: 500,
+		});
 	}
 }

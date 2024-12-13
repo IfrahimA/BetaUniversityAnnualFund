@@ -217,7 +217,7 @@ export default function Page() {
 					>
 						<option value='credit'>Credit Card</option>
 						<option value='debit'>Debit Card</option>
-						<option value='deferred'>Deferred Payment</option>
+						<option value='deferred'>Deferred</option>
 					</select>
 				</div>
 

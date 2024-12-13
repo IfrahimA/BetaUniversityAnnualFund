@@ -3,13 +3,13 @@
 import pool from '@/app/utils/postgres';
 
 export async function POST(req) {
-	const { classYear, donorId } = await req.json();
+	const { classYear } = await req.json();
 
 	try {
 		const client = await pool.connect();
 		const result = await client.query(
-			`INSERT INTO CLASSYEAR (Year, DonorID) VALUES ($1, $2)`,
-			[classYear, donorId]
+			`INSERT INTO CLASSYEAR (ClassYear) VALUES ($1)`,
+			[classYear]
 		);
 
 		client.release();

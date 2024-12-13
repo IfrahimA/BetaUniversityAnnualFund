@@ -8,7 +8,7 @@ export async function POST(req) {
 	try {
 		const client = await pool.connect();
 		const result = await client.query(
-			`INSERT INTO PAYMENT (PaymentMethod, DonationID) 
+			`INSERT INTO PAYMENT (paymentmethod, donationid) 
             VALUES ($1, $2)`,
 			[paymentMethod, donationID]
 		);

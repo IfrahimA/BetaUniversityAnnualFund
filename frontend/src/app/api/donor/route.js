@@ -9,7 +9,7 @@ export async function POST(req) {
 	try {
 		const client = await pool.connect();
 		const result = await client.query(
-			`INSERT INTO DONOR (FirstName, LastName, PhoneNumber, Email, Category) 
+			`INSERT INTO DONOR (firstname, lastname, phonenumber, email, category) 
             VALUES ($1, $2, $3, $4, $5) RETURNING donorid`,
 			[firstName, lastName, phoneNumber, email, category]
 		);

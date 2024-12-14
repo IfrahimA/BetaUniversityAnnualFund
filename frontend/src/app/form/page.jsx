@@ -15,10 +15,11 @@ export default function Page() {
 
 	const submitForm = async (e) => {
 		const date = new Date();
-		const formattedDate = date.toISOString().split('T')[0]; // "2024-01-01"
+		const formattedDate = date.toISOString().split('T')[0];
 
 		e.preventDefault();
 		try {
+			console.log(category);
 			const donorApi = await fetch('/api/donor', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
@@ -57,17 +58,17 @@ export default function Page() {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					classYear,
+					payment,
 					donorId,
 				}),
 			});
 
 			if (donorApi.ok && donationApi.ok && classApi.ok && paymentApi.ok) {
 				alert('Your donation have been added successfully!');
-				revalidatePath('/dashboard')
+				redirect('/dashboard');
 			}
 		} catch (error) {
-			console.error('Request failed:', error); // Log any unexpected errors
+			console.error('Request failed:', error);
 			alert('An unexpected error occurred.');
 		}
 	};
@@ -194,7 +195,6 @@ export default function Page() {
 						id='class'
 						name='class'
 						onChange={(e) => setCategory(e.target.value)}
-						className='mt-1 p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-orange-500 focus:border-orange-500 block w-full'
 					>
 						<option value='Alumni'>Alumni</option>
 						<option value='Parent'>Parent</option>

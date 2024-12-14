@@ -7,7 +7,6 @@ BEGIN
     INSERT INTO EVENTATTENDANCE (EventID, DonorID)
     VALUES (event_id, donor_id);
 END;
-$$;
 
 CREATE OR REPLACE PROCEDURE process_donors_by_category(category_filter TEXT)
 LANGUAGE plpgsql AS $$
@@ -34,7 +33,6 @@ BEGIN
     -- Close the cursor
     CLOSE donor_cursor;
 END;
-$$;
 
 /* Example */
 CALL process_donors_by_category('Alumni');
